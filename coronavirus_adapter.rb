@@ -1,24 +1,32 @@
 require "httparty"
 
 class CoronavirusAdapter
-    BASE_URL = "https://coronavirus-tracker-api.herokuapp.com/v2/locations?country_code="
-    attr_reader :country_code
+    # todo: move this out into a constants file...?
+    BASE_URL = "https://coronavirus-tracker-api.herokuapp.com/v2/"
 
-    def initialize(country_code)
-        @country_code = country_code
+    attr_reader :alpha_2_code
+
+    def initialize(alpha_2_code)
+        @alpha_2_code = alpha_2_code
     end
 
-    def get_carriers
-        get_response = get!
+    def confirmed
+        response["locations"].first["latest"]["confirmed"]
+    end
 
-        # todo: make this less hacky?  it works so whatever i guess lol \shrug
-        get_response["locations"].first["latest"]["confirmed"]
+    def deaths
+        response["locations"].first["latest"]["deaths"]
+    end
+
+    def recovered
+        response["locations"].first["latest"]["recovered"]
     end
 
     private
 
-    def get!
-        url = BASE_URL + country_code
-        HTTParty.get(url)
+    def response
+        return @response unless @response.nil?
+        url = BASE_URL + "locations?country_code=#{alpha_2_code}"
+        @response ||= HTTParty.get(url)
     end
 end
