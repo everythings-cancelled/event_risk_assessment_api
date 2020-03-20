@@ -25,20 +25,3 @@ post "/v1/risk" do
     content_type :json
     { risk: event.risk }.to_json
 end
-
-get "/v1/risk" do
-    group_size = params["group_size"].to_i
-    country_code = params["country_code"]
-
-    country_adapter = CountryAdapter.new(country_code)
-    coronavirus_adapter = CoronavirusAdapter.new(country_code)
-
-    event = Event.new(
-        population: country_adapter.get_population, 
-        carriers: coronavirus_adapter.get_carriers, 
-        group_size: group_size
-    )
-
-    content_type :json
-    { risk: event.risk }.to_json
-end
