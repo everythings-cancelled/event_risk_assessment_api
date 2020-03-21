@@ -12,13 +12,11 @@ post "/v1/risk" do
     params = JSON.parse(request.body.read)
 
     country = Restcountry::Country.find_by_name(params["country"])
-    coronavirus_adapter = CoronavirusAdapter.new(country.alpha2Code)
-
-    coronavirus = Coronavirus.new(coronavirus_adapter)
+    covid19_latest_data = PomberCovid19.find_by_region_name(params["country"]).last
 
     event = Event.new(
         population: country.population, 
-        carriers: coronavirus.infected, 
+        carriers: covid19_latest_data["confirmed"], 
         group_size: params["groupSize"].to_i
     )
 
