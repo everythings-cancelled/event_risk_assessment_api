@@ -2,10 +2,8 @@ require 'sinatra'
 require "sinatra/reloader"
 require "pry"
 require "restcountry"
+require "pomber_covid19"
 require_relative "./event"
-require_relative "./country_adapter"
-require_relative "./coronavirus_adapter"
-require_relative "./coronavirus"
 
 post "/v1/risk" do
     request.body.rewind
